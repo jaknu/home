@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+  influx:
+    image: influxdb
+    restart: always
+    ports:
+      - 8089:8089/udp
+    volumes:
+      - ./influxdb.conf:/etc/influxdb/influxdb.conf:ro
+      - ./data/influxdb:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana
+    restart: always
+    depends_on:
+      - influx
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana_entrypoint.sh:/entrypoint.sh:ro
+      - ./data/grafana:/var/lib/grafana
+    entrypoint: /entrypoint.sh
+
